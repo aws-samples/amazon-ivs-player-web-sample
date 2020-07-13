@@ -1,0 +1,17 @@
+{
+"compilerOptions": {
+  "module": "esnext",
+  "moduleResolution": "node",
+  "target": "esnext",
+  "outDir": "dist/esnextdir",
+  "types": [
+    "node",
+    "video.js"
+  ],
+  "skipLibCheck": true,
+  "lib": ["es2015", "dom", "webworker"],
+  "baseUrl": "."
+},
+"include": ["**/*.ts"],
+"exclude": ["**/*.wasm"]
+}

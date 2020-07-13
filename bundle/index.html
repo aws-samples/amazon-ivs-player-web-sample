@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<style>
+    body {
+        max-width: 100%;
+    }
+
+    .demo {
+        display: flex;
+        justify-content: center;
+    }
+
+    .video-container {
+        min-width: 75%;
+        max-width: 75%;
+    }
+
+    #video-player {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .src-container-direct {
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .src-input {
+        padding: 10px 5px;
+        width: 50%;
+    }
+
+    .src-submit {
+        height: 37px;
+        border-color: #ddd;
+        margin: 1px 5px
+    }
+</style>
+</head>
+<body>
+    <div class="demo">
+        <div class="video-container">
+            <form class="src-container-direct">
+                <input class="src-input" placeholder="Enter IVS .m3u8"/>
+                <button class="src-submit" type="submit">Load</button>
+            </form>
+            <video id="video-player" playsinline controls></video>
+            <div class='version'></div>
+        </div>
+    </div>
+    <script src="basic.js"></script>
+</body>
+</html>
