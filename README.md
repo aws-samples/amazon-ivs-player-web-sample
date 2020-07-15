@@ -1,6 +1,10 @@
+
+<a href="https://docs.aws.amazon.com/ivs/"><img align="right" width="128px" src="./ivs-logo.svg"></a>
+
 # Amazon IVS Player Web SDK Samples
 
 This project contains code samples demonstrating how to build, package, and integrate with the Amazon IVS Player Web SDK.
+
 
 ## Requirements
 - Node 12+
