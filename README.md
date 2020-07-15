@@ -1,5 +1,5 @@
 
-<a href="https://docs.aws.amazon.com/ivs/"><img align="right" width="128px" src="./ivs-logo.svg"></a>
+<a href="https://docs.aws.amazon.com/ivs/"><img align="left" width="40px" src="./ivs-logo.svg"></a>
 
 # Amazon IVS Player Web SDK Samples
 
