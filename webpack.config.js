@@ -61,7 +61,7 @@ module.exports = {
                  * The webpack file-loader (https://webpack.js.org/loaders/file-loader/) accomplishes this.
                  * Rollup's plugin-url (https://github.com/rollup/plugins/tree/master/packages/url) also seems to do this, but has not been tested.
                  */
-                test: /\/amazon-ivs-player\/.*dist\/assets\//,
+                test: /[\/\\]amazon-ivs-player[\/\\].*dist[\/\\]assets[\/\\]/,
                 loader: 'file-loader',
                 type: 'javascript/auto',
                 options: {
