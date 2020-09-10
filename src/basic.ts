@@ -1,5 +1,6 @@
 import {
     create,
+    ErrorType,
     isPlayerSupported,
     MediaPlayer,
     PlayerError,
@@ -62,7 +63,12 @@ class PlayerDemo {
         });
 
         player.addEventListener(PlayerEventType.ERROR, (error: PlayerError) => {
-            console.error('ERROR', error);
+            const statusTooManyRequests = 429;
+            if (error.type === ErrorType.NOT_AVAILABLE && error.code === statusTooManyRequests) {
+                console.error('Concurrent-viewer limit reached', error);
+            } else {
+                console.error('ERROR', error);
+            }
         });
 
         player.addEventListener(PlayerEventType.QUALITY_CHANGED, (quality: Quality) => {
