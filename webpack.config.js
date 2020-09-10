@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 
 /**
  * We use webpack in this project to demonstrate how to build the SDK.
@@ -23,11 +24,18 @@ module.exports = {
         disableHostCheck: true,
         compress: false,
         contentBase: [
-            path.resolve(__dirname, 'bundle'),
             path.resolve(__dirname, 'dist')
         ],
         index: 'index.html',
     },
+    plugins: [
+        // Copy our HTML pages to dist/. This project is compiled to expect assets in the same directory.
+        new CopyPlugin({
+            patterns: [
+                { from: 'pages', to: '' },
+            ],
+        }),
+    ],
     module: {
         rules: [
             {
