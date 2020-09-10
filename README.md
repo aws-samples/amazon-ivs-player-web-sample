@@ -15,7 +15,8 @@ This project contains code samples demonstrating how to build, package, and inte
 ## Setup
 1. [Locally clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this repository.
 2. Install dependencies: `npm install`
-3. Start the dev server: `npm start`
+3. Build and host using webpack-dev-server: `npm start`
+    * Alternatively, you can just build with `npm run bundle`. The `dist/` folder can then be independently hosted.
 4. Navigate to one of the demo links listed below
     * Once in the demo, open the developer tools to see relevant logs.
 
