@@ -1,6 +1,6 @@
 import { setupForm, getFormStream } from '../common/form-control';
 
-// IVSPlayer is added to the window when loaded from the script tag (see ../pages/load-from-cdn.html)
+// IVSPlayer is added to the window when loaded from the script tag (see ./cloud-player.html)
 // Alternatively, you can import the script via Webpack Externals: https://webpack.js.org/configuration/externals/
 // However, this is not shown here.
 // IVS types are not available for the cloud-loaded player.

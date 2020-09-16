@@ -3,7 +3,7 @@
 
 # Amazon IVS Player Web SDK Samples
 
-This project contains code samples demonstrating how to build, package, and integrate with the Amazon IVS Player Web SDK.
+This project contains code samples demonstrating how to build, package, and integrate with the Amazon IVS Player Web SDK. You can find the Web SDK API reference and documentation [here](https://docs.aws.amazon.com/ivs/).
 
 ## Requirements
 - Node 12+
@@ -33,11 +33,6 @@ Please see each sample for detailed code comments.
 * Vertical Video - https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.YtnrVcQbttF0.m3u8
 * Quiz - https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.xhP3ExfcX8ON.m3u8
 * VOD - https://d6hwdeiig07o4.cloudfront.net/ivs/956482054022/cTo5UpKS07do/2020-07-13T22-54-42.188Z/OgRXMLtq8M11/media/hls/master.m3u8
-
-## FAQs
-* Should I use the cloud-hosted player, or the player package from NPM?
-    * For most use cases, we recommend using the cloud-hosted player. It's easy to set up and does not require any packager, such as Webpack. The NPM package should be used when required to self-host assets, for example to comply with a same-origin Content Security Policy. This approach is more complex and requires experience with Webpack or similar tools.
-    
     
 ## License
 
