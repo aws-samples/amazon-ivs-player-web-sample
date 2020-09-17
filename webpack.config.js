@@ -27,6 +27,12 @@ module.exports = {
             path.resolve(__dirname, 'dist')
         ],
         index: 'index.html',
+        host: "0.0.0.0",
+        allowedHosts: [
+            ".repl.it",
+            ".repl.co",
+            ".repl.run"
+        ]
     },
     plugins: [
         // Copy our HTML pages to dist/. This project is compiled to expect assets in the same directory.
