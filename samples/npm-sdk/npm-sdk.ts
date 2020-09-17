@@ -10,6 +10,8 @@ import {
     TextCue,
     TextMetadataCue,
 } from 'amazon-ivs-player';
+import { setupForm, getFormStream } from '../common/form-control';
+
 /**
  * These imports are loaded via the file-loader, and return the path to the asset.
  * We use the TypeScript compiler (TSC) to check types; it doesn't know what this WASM module is, so let's ignore the error it throws (TS2307).
@@ -22,13 +24,37 @@ class PlayerDemo {
     private player: MediaPlayer;
     private videoElement: HTMLVideoElement = document.querySelector('#video-player');
 
-    constructor(player: MediaPlayer) {
-        this.player = player;
+    constructor(stream: string) {
+        /**
+         * The IVS player can only be used in browsers which support WebAssembly.
+         * You should use `isPlayerSupported` before calling `create`.
+         * Otherwise, wrap `create` in a `try/catch` block, because an error will be thrown in browsers without WebAssembly support.
+         */
+        if (!isPlayerSupported) {
+            throw new Error('IVS Player is not supported in this browser');
+        }
+
+        /**
+         * Web Workers and WASM Workers need to be created via URL. Webpack has created the relative URL for us via file-loader,
+         * now we just have to create the absolute (fully qualified) URL.
+         */
+        const createAbsolutePath = (assetPath: string) => new URL(assetPath, document.URL).toString();
+        const player = this.player = create({
+            wasmWorker: createAbsolutePath(wasmWorkerPath),
+            wasmBinary: createAbsolutePath(wasmBinaryPath),
+        });
+
         player.attachHTMLVideoElement(this.videoElement);
         this.attachListeners();
 
-        const versionString: HTMLElement =  document.querySelector('.version');
+        const versionString: HTMLElement = document.querySelector('.version');
         versionString.innerText = `Amazon IVS Player version ${player.getVersion()}`;
+
+        this.loadAndPlay(stream);
+
+        // We're adding the demo here so you can play with it in the console.
+        // @ts-ignore
+        window.player = player;
     }
 
     loadAndPlay(stream: string) {
@@ -43,11 +69,6 @@ class PlayerDemo {
          * */
         player.setAutoplay(true);
         player.load(stream);
-    }
-
-    destroy() {
-        // Event listeners are automatically removed on player destruction
-        this.player.delete();
     }
 
     private attachListeners() {
@@ -87,62 +108,5 @@ class PlayerDemo {
     }
 }
 
-// This is the "quiz" stream, which contains Timed Metadata. See the README for more sample streams.
-const defaultStream = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.xhP3ExfcX8ON.m3u8';
-const inputEl: HTMLInputElement = document.querySelector('.src-input');
-let demo: PlayerDemo;
-
-setup();
-
-function setup() {
-    /**
-     * The IVS player can only be used in browsers which support WebAssembly.
-     * You should use `isPlayerSupported` before calling `create`.
-     * Otherwise, wrap `create` in a `try/catch` block, because an error will be thrown in browsers without WebAssembly support.
-     */
-    if (isPlayerSupported) {
-        setupForm();
-        setupPlayer();
-    } else {
-        console.error('IVS Player is not supported in this browser');
-    }
-}
-
-function setupPlayer() {
-    const createAbsolutePath = (assetPath: string) => new URL(assetPath, document.URL).toString();
-    const player = create({
-        wasmWorker: createAbsolutePath(wasmWorkerPath),
-        wasmBinary: createAbsolutePath(wasmBinaryPath),
-    });
-
-    demo = new PlayerDemo(player);
-    loadFormStream();
-
-    /**
-     * Add the demo and player to the window so that you can play around with them in the console.
-     * This is not necessary for production.
-     * */
-    // @ts-ignore
-    window.demo = demo;
-    // @ts-ignore
-    window.player = demo.player;
-}
-
-function setupForm() {
-    // Set the stream to load using the `playbackUrl=` query param
-    const params = new URLSearchParams(window.location.search);
-    const streamParam = params.get('playbackUrl');
-    if (streamParam) {
-        inputEl.value = streamParam;
-    }
-
-    const formEl = document.querySelector('.src-container-direct');
-    formEl.addEventListener('submit', (event) => {
-        event.preventDefault();
-        loadFormStream();
-    })
-}
-
-function loadFormStream() {
-    demo.loadAndPlay(inputEl.value || defaultStream);
-}
+const demo = new PlayerDemo(getFormStream());
+setupForm(demo.loadAndPlay);
