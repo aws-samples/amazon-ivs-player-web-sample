@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 
+
 /**
  * We use webpack in this project to demonstrate how to build the SDK.
  * Other packagers should work too, but have not been tested.
@@ -10,8 +11,9 @@ module.exports = {
     mode: 'development',
     devtool: 'cheap-source-map',
     entry: {
-        basic: path.resolve(__dirname, 'src/basic.ts'),
-        videojs: path.resolve(__dirname, 'src/videojs-tech.ts'),
+        'npm-sdk': path.resolve(__dirname, 'samples/npm-sdk/npm-sdk.ts'),
+        'cloud-player':path.resolve(__dirname, 'samples/cloud-player/cloud-player.ts'),
+        'videojs': path.resolve(__dirname, 'samples/videojs/videojs.ts')
     },
     resolve: {
         extensions: ['.ts', '.js']
@@ -38,7 +40,7 @@ module.exports = {
         // Copy our HTML pages to dist/. This project is compiled to expect assets in the same directory.
         new CopyPlugin({
             patterns: [
-                { from: 'pages', to: '' },
+                { from: 'samples/**/*.html', to: '', flatten: true },
             ],
         }),
     ],
