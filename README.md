@@ -10,6 +10,10 @@ This project contains code samples demonstrating how to build, package, and inte
 - NPM 6+
 - A browser which meets the IVS web player requirements
 
+## Live Demo
+
+Try out this repo in [Repl.it](https://repl.it/@johnBartos/amazon-ivs-player-web-sample)! You can build, run, and experiment with our code without having to set it up yourself.
+
 ## Setup
 1. [Locally clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this repository.
 2. Install dependencies: `npm install`
