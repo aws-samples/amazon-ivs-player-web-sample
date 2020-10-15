@@ -1,7 +1,7 @@
 
 <a href="https://docs.aws.amazon.com/ivs/"><img align="right" width="128px" src="./ivs-logo.svg"></a>
 
-# Amazon IVS Player Web SDK Samples
+# Amazon IVS Player Web SDK Samples &middot; [![Run on Repl.it](https://repl.it/badge/github/aws-samples/amazon-ivs-player-web-sample)](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample)
 
 This project contains code samples demonstrating how to build, package, and integrate with the Amazon IVS Player Web SDK. You can find the Web SDK API reference and documentation [here](https://docs.aws.amazon.com/ivs/).
 
@@ -12,7 +12,7 @@ This project contains code samples demonstrating how to build, package, and inte
 
 ## Live Demo
 
-Try out this repo in [Repl.it](https://repl.it/@johnBartos/amazon-ivs-player-web-sample)! You can build, run, and experiment with our code without having to set it up yourself.
+Try out this repo in [Repl.it](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample)! You can build, run, and experiment with our code without having to set it up yourself.
 
 ## Setup
 1. [Locally clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this repository.
