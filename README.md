@@ -10,10 +10,6 @@ This project contains code samples demonstrating how to build, package, and inte
 - NPM 6+
 - A browser which meets the IVS web player requirements
 
-## Live Demo
-
-Try out this repo in [Repl.it](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample)! You can build, run, and experiment with our code without having to set it up yourself.
-
 ## Setup
 1. [Locally clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this repository.
 2. Install dependencies: `npm install`
@@ -30,6 +26,16 @@ Try out this repo in [Repl.it](https://repl.it/github/aws-samples/amazon-ivs-pla
 * [Webpack build configuration](./webpack.config.js) - Demonstrates how to make player assets available via Webpack.
 
 Please see each sample for detailed code comments.
+
+## Live Demo
+
+Try out this repo in [Repl.it](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample). You can build, run, and experiment with our code without having to set it up yourself.
+
+1. Visit https://repl.it/github/aws-samples/amazon-ivs-player-web-sample and sign up for an account
+2. Leave the default repl.it configuration (select language: Node.js, configure the run button: `npm start`) and click "Done"
+3. Click the "Run" button
+4. Wait for `npm install` and `npm start` to complete. You should see `Compiled successfully` in the console when done
+5. Reload the page and browse the live samples in the top right window
 
 ## Test Streams
 * 1080p30 - https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8
