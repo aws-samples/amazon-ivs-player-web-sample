@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 // import * as AmazonIVSPlayer from 'amazon-ivs-player';
 
 const AmazonIVSPlayerComponent = React.forwardRef((props, ref) => {
     const [player, setPlayer] = useState(null);
+    const vEl = useRef(null);
     const createPlayer = () => {
         const p = window.IVSPlayer.create({
             wasmWorker: "https://player.live-video.net/1.2.0/amazon-ivs-wasmworker.min.js",
@@ -15,12 +16,13 @@ const AmazonIVSPlayerComponent = React.forwardRef((props, ref) => {
         if (!player) {
             return;
         }
-        player.attachHTMLVideoElement(props.video.current);
+        console.log('attach html video element');
+        player.attachHTMLVideoElement(vEl.current);
         return () => {
             player.delete();
             setPlayer(null);
         }
-    }, [props.video.current, player]);
+    }, [vEl.current, player]);
 
     useEffect(() => {
         if (!player) {
@@ -46,7 +48,8 @@ const AmazonIVSPlayerComponent = React.forwardRef((props, ref) => {
 
     return (
         <div>
-            {props.children}
+            <video ref={vEl} {... props}>
+            </video>
         </div>
     );
 });
