@@ -16,7 +16,6 @@ const AmazonIVSPlayerComponent = React.forwardRef((props, ref) => {
         if (!player) {
             return;
         }
-        console.log('attach html video element');
         player.attachHTMLVideoElement(vEl.current);
         return () => {
             player.delete();
