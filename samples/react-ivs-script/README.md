@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Sample Components
+AmazonIVSPlayerComponent - This component shows how to wrap Amazon IVS Player sdk using <script> approach. A unique player instance is associated for a component and is deleted when the component is unmounted.
+
+ToggleButton - Simple <button> implementation to mount and unmount the <AmazonIVSPlayerComponent> components
+
+UrlBox - A <form> which takes a url input and mounts a new <AmazonIVSPlayerComponent>
+
 ## Available Scripts
 
 In the project directory, you can run:
