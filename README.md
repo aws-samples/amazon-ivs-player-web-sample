@@ -10,6 +10,27 @@ This project contains code samples demonstrating how to build, package, and inte
 - NPM 6+
 - A browser which meets the IVS web player requirements
 
+## How to Import The SDK from NPM
+The Amazon IVS Web SDK on NPM is built using Webpack using the [commonjs2](https://github.com/webpack/webpack/issues/1114) library target. We recommend importing with the `import` statement, but any module syntax compatible with `commonjs2` will work.
+
+You need to import two files to use the SDK:
+
+* `amazon-ivs-player/dist/assets/amazon-ivs-wasmworker.min.js`
+* `amazon-ivs-player/dist/assets/amazon-ivs-wasmworker.min.wasm`
+
+Please see our [sample player](./samples/npm-sdk) for an example on how to import the SDK assets. However, you must also configure your build tool to properly import the SDK WebAssembly files.
+
+### How to import WebAssembly Files
+The Amazon IVS Web SDK uses WebAssembly (WASM). The WASM file is included separately from the JavaScript file. There are two important steps you must take to properly import the WASM:
+ 
+* **You must not transpile the WASM file**. If you do, the Player will fail on setup and throw an error.
+* It is strongly suggested to [stream the WASM file](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming)
+
+Webpack's [file-loader](https://webpack.js.org/loaders/file-loader/) meets both of the above requirements. We have included a sample [Webpack config](webpack.config.js) which demonstrates how to use this to load our SDK.
+
+### You don't need to install from NPM
+We also provide the Amazon IVS SDK hosted on our CDN. Cloud-hosted SDKs are easier to get started with, and do not require you to use Webpack or another build tool. There is no difference in performance between either SDK. However, the Cloud SDK does not currently support TypeScript types. Please see the sample directory below for how to use the Cloud SDK.
+
 ## Setup
 1. [Locally clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository) this repository.
 2. Install dependencies: `npm install`
