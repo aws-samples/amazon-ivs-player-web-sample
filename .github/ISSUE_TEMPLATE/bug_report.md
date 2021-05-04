@@ -7,7 +7,9 @@ assignees: ''
 
 ---
 
-Please only use this template to file issues with our sample code. Reach out to [AWS Support](https://aws.amazon.com/premiumsupport/) for general help with the IVS Player SDK or your specific integration.
+<!--
+Please only use this template to file issues with our sample code. Reach out to AWS Support (https://aws.amazon.com/premiumsupport/) for general help with the IVS Player SDK or your specific integration.
+-->
 
 **Describe the bug**
 A clear and concise description of what the bug is.
