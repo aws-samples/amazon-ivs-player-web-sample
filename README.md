@@ -10,7 +10,7 @@ This project contains code samples demonstrating how to build, package, and inte
 - NPM 6+
 - A browser which meets the IVS web player requirements
 
-## How to Import The SDK from NPM
+## How to Import the SDK from NPM
 The Amazon IVS Web SDK on NPM is built using Webpack using the [commonjs2](https://github.com/webpack/webpack/issues/1114) library target. We recommend importing with the `import` statement, but any module syntax compatible with `commonjs2` will work.
 
 You need to import two files to use the SDK:
