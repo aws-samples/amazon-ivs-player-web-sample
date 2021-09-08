@@ -41,5 +41,5 @@ const events: VideoJSEvents = player.getIVSEvents();
 const ivsPlayer = player.getIVSPlayer();
 ivsPlayer.addEventListener(events.PlayerState.PLAYING, () => { console.log('IVS Player is playing') });
 
-setupForm(player.src);
+setupForm((source) => { player.src(source) });
 player.src(getFormStream());
