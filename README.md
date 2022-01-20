@@ -1,7 +1,8 @@
 
 <a href="https://docs.aws.amazon.com/ivs/"><img align="right" width="128px" src="./ivs-logo.svg"></a>
 
-# Amazon IVS Player Web SDK Samples &middot; [![Run on Repl.it](https://repl.it/badge/github/aws-samples/amazon-ivs-player-web-sample)](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample)
+# Amazon IVS Player Web SDK Samples
+[![Edit amazon-ivs-player-web-sample](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/aws-samples/amazon-ivs-player-web-sample/tree/master/?fontsize=14&hidenavigation=1&theme=dark&view=preview)
 
 This project contains code samples demonstrating how to build, package, and integrate with the Amazon IVS Player Web SDK. You can find the Web SDK API reference and documentation [here](https://docs.aws.amazon.com/ivs/).
 
@@ -50,13 +51,7 @@ Please see each sample for detailed code comments.
 
 ## Live Demo
 
-Try out this repo in [Repl.it](https://repl.it/github/aws-samples/amazon-ivs-player-web-sample). You can build, run, and experiment with our code without having to set it up yourself.
-
-1. Visit https://repl.it/github/aws-samples/amazon-ivs-player-web-sample and sign up for an account
-2. Leave the default repl.it configuration (select language: Node.js, configure the run button: `npm start`) and click "Done"
-3. Click the "Run" button
-4. Wait for `npm install` and `npm start` to complete. You should see `Compiled successfully` in the console when done
-5. Reload the page and browse the live samples in the top right window
+Try out this repo in [CodeSandbox](https://githubbox.com/aws-samples/amazon-ivs-player-web-sample). You can build, run, and experiment with our code without having to set it up yourself.
 
 ## Test Streams
 * 1080p60 https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8
