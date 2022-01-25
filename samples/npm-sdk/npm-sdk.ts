@@ -120,4 +120,4 @@ class PlayerDemo {
 }
 
 const demo = new PlayerDemo(getFormStream());
-setupForm(demo.loadAndPlay);
+setupForm((stream: string) =>  demo.loadAndPlay(stream));
