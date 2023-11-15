@@ -16,6 +16,10 @@ module.exports = {
       'samples/cloud-player/cloud-player.ts'
     ),
     videojs: path.resolve(__dirname, 'samples/videojs/videojs.ts'),
+    'service-worker': path.resolve(
+      __dirname,
+      'samples/service-worker/service-worker.ts'
+    ),
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -36,7 +40,10 @@ module.exports = {
   plugins: [
     // Copy our HTML pages to dist/. This project is compiled to expect assets in the same directory.
     new CopyPlugin({
-      patterns: [{ from: 'samples/**/*.html', to: '', flatten: true }],
+      patterns: [
+        { from: 'samples/**/*.html', to: '', flatten: true },
+        { from: 'samples/service-worker/amazon-ivs-service-worker-loader.js', to: '', flatten: true }
+      ],
     }),
   ],
   module: {

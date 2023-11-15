@@ -44,6 +44,8 @@ We also provide the Amazon IVS SDK hosted on our CDN. Cloud-hosted SDKs are easi
 * [Cloud Player Demo](./samples/cloud-player/cloud-player.ts) - Demonstrates how to instantiate a player using our cloud-hosted assets. Webpack is used here to transpile TypeScript.
 * [How to load from NPM](./samples/npm-sdk/npm-sdk.ts) - Demonstrates how to create a player using the NPM package and Webpack.
 * [Basic VideoJS Tech demo](./samples/videojs/videojs.ts) - A basic integration with the IVS player VideoJS tech.
+* [Service worker Demo](./samples/service-worker/service-worker.ts) - Demonstrates how to setup and configure a service worker to enhance playback on environments / browsers where only native playback is available. Primarily useful for mobile Safari on iOS.
+    * See the [Service worker setup section](https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/web-getting-started.html#web-service-worker) in the Web SDK Guide for more information
 * [Pure JavaScript Codepen](https://codepen.io/amazon-ivs/pen/c3b13a2df34b60ada7756f3a2af8d2f0) - A demo player built using pure JavaScript.
 * [Webpack build configuration](./webpack.config.js) - Demonstrates how to make player assets available via Webpack.
 
