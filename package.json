@@ -19,7 +19,7 @@
   },
   "license": "MIT-0",
   "dependencies": {
-    "amazon-ivs-player": "^1.33.0",
+    "amazon-ivs-player": "^1.34.1",
     "video.js": "7.17.0"
   },
   "devDependencies": {
