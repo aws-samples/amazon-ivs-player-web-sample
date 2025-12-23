@@ -1,0 +1,614 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Multi-Angle IVS Player Infrastructure - S3, CloudFront, and IVS Channels'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: ivs-multi-angle-player
+    Description: Project name used for resource naming
+    
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Environment name
+    
+  NumberOfStreams:
+    Type: Number
+    Default: 10
+    MinValue: 1
+    MaxValue: 10
+    Description: Number of IVS channels to create (1-10)
+    
+  IVSChannelType:
+    Type: String
+    Default: STANDARD
+    AllowedValues:
+      - STANDARD
+      - BASIC
+    Description: IVS Channel type (STANDARD for higher quality, BASIC for cost optimization)
+    
+  IVSLatencyMode:
+    Type: String
+    Default: LOW
+    AllowedValues:
+      - LOW
+      - NORMAL
+    Description: IVS Latency mode
+
+Conditions:
+  CreateStream2: !Not [!Equals [!Ref NumberOfStreams, 1]]
+  CreateStream3: !Or [!Equals [!Ref NumberOfStreams, 3], !Equals [!Ref NumberOfStreams, 4], !Equals [!Ref NumberOfStreams, 5], !Equals [!Ref NumberOfStreams, 6], !Equals [!Ref NumberOfStreams, 7], !Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream4: !Or [!Equals [!Ref NumberOfStreams, 4], !Equals [!Ref NumberOfStreams, 5], !Equals [!Ref NumberOfStreams, 6], !Equals [!Ref NumberOfStreams, 7], !Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream5: !Or [!Equals [!Ref NumberOfStreams, 5], !Equals [!Ref NumberOfStreams, 6], !Equals [!Ref NumberOfStreams, 7], !Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream6: !Or [!Equals [!Ref NumberOfStreams, 6], !Equals [!Ref NumberOfStreams, 7], !Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream7: !Or [!Equals [!Ref NumberOfStreams, 7], !Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream8: !Or [!Equals [!Ref NumberOfStreams, 8], !Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream9: !Or [!Equals [!Ref NumberOfStreams, 9], !Equals [!Ref NumberOfStreams, 10]]
+  CreateStream10: !Equals [!Ref NumberOfStreams, 10]
+
+Resources:
+  # ============================================
+  # S3 Bucket for Static Website Hosting
+  # ============================================
+  WebsiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${ProjectName}-${Environment}-${AWS::AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-website'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ============================================
+  # CloudFront Origin Access Control (OAC)
+  # ============================================
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${ProjectName}-${Environment}-oac'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # ============================================
+  # CloudFront Distribution
+  # ============================================
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub 'Multi-Angle IVS Player - ${Environment}'
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        PriceClass: PriceClass_All
+        
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt WebsiteBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt CloudFrontOAC.Id
+        
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # CachingOptimized
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf  # CORS-S3Origin
+        
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 300
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 300
+        
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-cdn'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+
+  # ============================================
+  # S3 Bucket Policy for CloudFront Access
+  # ============================================
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebsiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${WebsiteBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}'
+
+  # ============================================
+  # IVS Channels (Stream 1-10)
+  # ============================================
+  IVSChannel1:
+    Type: AWS::IVS::Channel
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-1-main'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-1-main'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Main
+        - Key: StreamIndex
+          Value: '1'
+
+  IVSStreamKey1:
+    Type: AWS::IVS::StreamKey
+    Properties:
+      ChannelArn: !GetAtt IVSChannel1.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-1'
+
+  IVSChannel2:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream2
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-2-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-2-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '2'
+
+  IVSStreamKey2:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream2
+    Properties:
+      ChannelArn: !GetAtt IVSChannel2.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-2'
+
+  IVSChannel3:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream3
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-3-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-3-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '3'
+
+  IVSStreamKey3:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream3
+    Properties:
+      ChannelArn: !GetAtt IVSChannel3.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-3'
+
+  IVSChannel4:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream4
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-4-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-4-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '4'
+
+  IVSStreamKey4:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream4
+    Properties:
+      ChannelArn: !GetAtt IVSChannel4.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-4'
+
+  IVSChannel5:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream5
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-5-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-5-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '5'
+
+  IVSStreamKey5:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream5
+    Properties:
+      ChannelArn: !GetAtt IVSChannel5.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-5'
+
+  IVSChannel6:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream6
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-6-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-6-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '6'
+
+  IVSStreamKey6:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream6
+    Properties:
+      ChannelArn: !GetAtt IVSChannel6.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-6'
+
+  IVSChannel7:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream7
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-7-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-7-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '7'
+
+  IVSStreamKey7:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream7
+    Properties:
+      ChannelArn: !GetAtt IVSChannel7.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-7'
+
+  IVSChannel8:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream8
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-8-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-8-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '8'
+
+  IVSStreamKey8:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream8
+    Properties:
+      ChannelArn: !GetAtt IVSChannel8.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-8'
+
+  IVSChannel9:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream9
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-9-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-9-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '9'
+
+  IVSStreamKey9:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream9
+    Properties:
+      ChannelArn: !GetAtt IVSChannel9.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-9'
+
+  IVSChannel10:
+    Type: AWS::IVS::Channel
+    Condition: CreateStream10
+    Properties:
+      Name: !Sub '${ProjectName}-${Environment}-channel-10-sub'
+      LatencyMode: !Ref IVSLatencyMode
+      Type: !Ref IVSChannelType
+      Authorized: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-channel-10-sub'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: StreamType
+          Value: Sub
+        - Key: StreamIndex
+          Value: '10'
+
+  IVSStreamKey10:
+    Type: AWS::IVS::StreamKey
+    Condition: CreateStream10
+    Properties:
+      ChannelArn: !GetAtt IVSChannel10.Arn
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-${Environment}-streamkey-10'
+
+Outputs:
+  # CloudFront & S3 Outputs
+  CloudFrontDistributionURL:
+    Description: CloudFront Distribution URL
+    Value: !Sub 'https://${CloudFrontDistribution.DomainName}'
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-cloudfront-url'
+
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution ID
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-cloudfront-id'
+
+  WebsiteBucketName:
+    Description: S3 Bucket Name for Website Hosting
+    Value: !Ref WebsiteBucket
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-bucket-name'
+
+  WebsiteBucketArn:
+    Description: S3 Bucket ARN
+    Value: !GetAtt WebsiteBucket.Arn
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-bucket-arn'
+
+  # IVS Channel Outputs
+  IVSChannel1PlaybackURL:
+    Description: IVS Channel 1 (Main) Playback URL
+    Value: !GetAtt IVSChannel1.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-1-playback-url'
+
+  IVSChannel1IngestEndpoint:
+    Description: IVS Channel 1 (Main) Ingest Endpoint
+    Value: !GetAtt IVSChannel1.IngestEndpoint
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-1-ingest-endpoint'
+
+  IVSChannel1StreamKey:
+    Description: IVS Channel 1 (Main) Stream Key
+    Value: !GetAtt IVSStreamKey1.Value
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-1-stream-key'
+
+  IVSChannel2PlaybackURL:
+    Condition: CreateStream2
+    Description: IVS Channel 2 (Sub) Playback URL
+    Value: !GetAtt IVSChannel2.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-2-playback-url'
+
+  IVSChannel2IngestEndpoint:
+    Condition: CreateStream2
+    Description: IVS Channel 2 (Sub) Ingest Endpoint
+    Value: !GetAtt IVSChannel2.IngestEndpoint
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-2-ingest-endpoint'
+
+  IVSChannel2StreamKey:
+    Condition: CreateStream2
+    Description: IVS Channel 2 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey2.Value
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-2-stream-key'
+
+  IVSChannel3PlaybackURL:
+    Condition: CreateStream3
+    Description: IVS Channel 3 (Sub) Playback URL
+    Value: !GetAtt IVSChannel3.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-3-playback-url'
+
+  IVSChannel3StreamKey:
+    Condition: CreateStream3
+    Description: IVS Channel 3 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey3.Value
+
+  IVSChannel4PlaybackURL:
+    Condition: CreateStream4
+    Description: IVS Channel 4 (Sub) Playback URL
+    Value: !GetAtt IVSChannel4.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-4-playback-url'
+
+  IVSChannel4StreamKey:
+    Condition: CreateStream4
+    Description: IVS Channel 4 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey4.Value
+
+  IVSChannel5PlaybackURL:
+    Condition: CreateStream5
+    Description: IVS Channel 5 (Sub) Playback URL
+    Value: !GetAtt IVSChannel5.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-5-playback-url'
+
+  IVSChannel5StreamKey:
+    Condition: CreateStream5
+    Description: IVS Channel 5 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey5.Value
+
+  IVSChannel6PlaybackURL:
+    Condition: CreateStream6
+    Description: IVS Channel 6 (Sub) Playback URL
+    Value: !GetAtt IVSChannel6.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-6-playback-url'
+
+  IVSChannel6StreamKey:
+    Condition: CreateStream6
+    Description: IVS Channel 6 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey6.Value
+
+  IVSChannel7PlaybackURL:
+    Condition: CreateStream7
+    Description: IVS Channel 7 (Sub) Playback URL
+    Value: !GetAtt IVSChannel7.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-7-playback-url'
+
+  IVSChannel7StreamKey:
+    Condition: CreateStream7
+    Description: IVS Channel 7 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey7.Value
+
+  IVSChannel8PlaybackURL:
+    Condition: CreateStream8
+    Description: IVS Channel 8 (Sub) Playback URL
+    Value: !GetAtt IVSChannel8.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-8-playback-url'
+
+  IVSChannel8StreamKey:
+    Condition: CreateStream8
+    Description: IVS Channel 8 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey8.Value
+
+  IVSChannel9PlaybackURL:
+    Condition: CreateStream9
+    Description: IVS Channel 9 (Sub) Playback URL
+    Value: !GetAtt IVSChannel9.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-9-playback-url'
+
+  IVSChannel9StreamKey:
+    Condition: CreateStream9
+    Description: IVS Channel 9 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey9.Value
+
+  IVSChannel10PlaybackURL:
+    Condition: CreateStream10
+    Description: IVS Channel 10 (Sub) Playback URL
+    Value: !GetAtt IVSChannel10.PlaybackUrl
+    Export:
+      Name: !Sub '${ProjectName}-${Environment}-channel-10-playback-url'
+
+  IVSChannel10StreamKey:
+    Condition: CreateStream10
+    Description: IVS Channel 10 (Sub) Stream Key
+    Value: !GetAtt IVSStreamKey10.Value
