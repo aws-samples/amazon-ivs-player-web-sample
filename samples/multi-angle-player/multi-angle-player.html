@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Angle IVS Player - 10 Streams</title>
+    <link rel="stylesheet" href="multi-angle-player.css">
+    <!-- IVS Player SDK from CDN -->
+    <script src="https://player.live-video.net/1.30.0/amazon-ivs-player.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎥 Multi-Angle IVS Player</h1>
+            <p class="subtitle">10 Simultaneous Video Streams</p>
+        </header>
+
+        <!-- Main Video Display -->
+        <section class="main-video-container">
+            <div class="video-wrapper">
+                <video id="main-video" class="main-video" playsinline></video>
+                <div class="video-info">
+                    <span id="main-stream-name">Stream 1 - Main Angle</span>
+                    <span id="main-quality" class="quality-badge">Loading...</span>
+                </div>
+                <div class="video-controls">
+                    <button id="play-pause-btn" class="control-btn">
+                        <span class="icon">▶️</span>
+                    </button>
+                    <button id="mute-unmute-btn" class="control-btn">
+                        <span class="icon">🔊</span>
+                    </button>
+                    <button id="fullscreen-btn" class="control-btn">
+                        <span class="icon">⛶</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thumbnail Grid (9 sub streams) -->
+        <section class="thumbnail-grid">
+            <div class="thumbnail-wrapper" data-stream-index="0">
+                <video id="video-0" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 1 (Main)</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="1">
+                <video id="video-1" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 2</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="2">
+                <video id="video-2" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 3</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="3">
+                <video id="video-3" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 4</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="4">
+                <video id="video-4" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 5</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="5">
+                <video id="video-5" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 6</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="6">
+                <video id="video-6" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 7</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="7">
+                <video id="video-7" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 8</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="8">
+                <video id="video-8" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 9</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+            <div class="thumbnail-wrapper" data-stream-index="9">
+                <video id="video-9" class="thumbnail-video" playsinline muted></video>
+                <div class="thumbnail-overlay">
+                    <span class="stream-label">Stream 10</span>
+                    <span class="stream-status">●</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration Panel -->
+        <section class="config-panel">
+            <h3>Stream Configuration</h3>
+            <div id="config-form">
+                <p class="info-text">
+                    ℹ️ Stream URLs will be automatically loaded from CloudFormation outputs.
+                    If not available, enter them manually below.
+                </p>
+                <div class="config-row">
+                    <label for="stream-url-0">Stream 1 URL (Main):</label>
+                    <input type="text" id="stream-url-0" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-1">Stream 2 URL:</label>
+                    <input type="text" id="stream-url-1" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-2">Stream 3 URL:</label>
+                    <input type="text" id="stream-url-2" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-3">Stream 4 URL:</label>
+                    <input type="text" id="stream-url-3" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-4">Stream 5 URL:</label>
+                    <input type="text" id="stream-url-4" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-5">Stream 6 URL:</label>
+                    <input type="text" id="stream-url-5" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-6">Stream 7 URL:</label>
+                    <input type="text" id="stream-url-6" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-7">Stream 8 URL:</label>
+                    <input type="text" id="stream-url-7" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-8">Stream 9 URL:</label>
+                    <input type="text" id="stream-url-8" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <div class="config-row">
+                    <label for="stream-url-9">Stream 10 URL:</label>
+                    <input type="text" id="stream-url-9" placeholder="https://xxx.cloudfront.net/hls/master.m3u8">
+                </div>
+                <button id="load-streams-btn" class="load-btn">Load All Streams</button>
+            </div>
+        </section>
+
+        <!-- Stats Panel -->
+        <section class="stats-panel">
+            <h3>Performance Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Active Streams:</span>
+                    <span id="active-streams" class="stat-value">0/10</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Main Quality:</span>
+                    <span id="main-quality-stat" class="stat-value">-</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Main Bitrate:</span>
+                    <span id="main-bitrate" class="stat-value">- kbps</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Buffer Health:</span>
+                    <span id="buffer-health" class="stat-value">Good</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load the JavaScript -->
+    <script src="multi-angle-player.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{
+  "streams": [
+    {
+      "id": "stream-0",
+      "name": "Main Angle",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.5HK5p34Oi7lA.m3u8",
+      "isMain": true
+    },
+    {
+      "id": "stream-1",
+      "name": "Angle 2",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.opugdqOJIP5F.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-2",
+      "name": "Angle 3",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.2Hx211YUZw6Z.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-3",
+      "name": "Angle 4",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.ybDxlkDwCsHQ.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-4",
+      "name": "Angle 5",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.LiSZwwbCD9w2.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-5",
+      "name": "Angle 6",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.l7joYTd1JHMv.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-6",
+      "name": "Angle 7",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.8QdI3jUuusb5.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-7",
+      "name": "Angle 8",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.tklesTX4L4hT.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-8",
+      "name": "Angle 9",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.5HabWRvu9fub.m3u8",
+      "isMain": false
+    },
+    {
+      "id": "stream-9",
+      "name": "Angle 10",
+      "url": "https://48cec73c6049.us-west-2.playback.live-video.net/api/video/v1/us-west-2.176452609815.channel.2SnSUTZm7z33.m3u8",
+      "isMain": false
+    }
+  ]
+}
